@@ -77,11 +77,13 @@ contract BrusselsDAO {
         stewards[stewardAddress].hasCommitment = false; // Assuming commitment needs to be proven after registration
     }
 
-
-    function createProposal(string calldata description, uint256 amount) external onlyStewards {
-    proposals.push(Proposal(description, 0, amount, msg.sender));
-    uint256 proposalId = proposals.length - 1;
-    stewards[msg.sender].ownedProposalIds.push(proposalId);
+    function createProposal(string calldata description, uint256 amount, address stewardAddress) external onlyStewards {
+        Proposal storage newProposal = proposals.push();
+        newProposal.description = description;
+        newProposal.voteCount = 0;
+        newProposal.amount = amount;
+        newProposal.steward = stewardAddress;
+        newProposal.uniqueContributors = 0;
     }
 
     function contributeToProposal(uint256 proposalId) external payable onlyVoters {
