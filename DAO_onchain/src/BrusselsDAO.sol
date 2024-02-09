@@ -17,6 +17,11 @@ contract BrusselsDAO {
     }
 
     struct Voter {
+    //TODO: Create token that represent proof of commitment IRL
+    //hasCommitment = ToBeStewardWallet that have the NFT/FToken
+    //SC manage the token, the last toBeSteward send the token to the sc and the CurrentSteward verify the state of the box IRL
+    //and aprove the sent of the token to the next tobeSteward and make the actual tobestwerd in a steward"
+
         bool isRegistered;
         bool hasVoted;
         uint256 votedProposalId;
@@ -43,6 +48,10 @@ contract BrusselsDAO {
     require(stewards[msg.sender].isRegistered, "Only registered stewards can perform this action");
     _;
     }
+
+    //TODO: Being and steward grant you a place in the multisig that admin this contract
+    //10 stewards, 3 approvers ---> 15 stewards 7 approvers and so on
+
     constructor() {
         admin = msg.sender;
     }
@@ -69,6 +78,8 @@ contract BrusselsDAO {
     require(proposalId < proposals.length, "Invalid proposal.");
     proposals[proposalId].amount += msg.value;
 }
+    //TODO:The DAO send 100 euros and 100 tokens to start the proposal if there is no members interested you
+    //don't have permision to withdraw token and don't start the proposal
 
     function vote(uint proposalId) external onlyVoters {
         Voter storage sender = voters[msg.sender];
