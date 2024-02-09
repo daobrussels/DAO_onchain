@@ -136,5 +136,6 @@ contract BrusselsDAO {
     // Emit an event after the funds have been successfully transferred.
     emit FundsUnlocked(proposalId, proposal.steward, proposal.amount);
 }
+receive() external payable {}
 
 }
