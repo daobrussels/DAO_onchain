@@ -45,8 +45,8 @@ contract BrusselsDAO {
     }
 
     modifier onlyStewards() {
-    require(stewards[msg.sender].isRegistered, "Only registered stewards can perform this action");
-    _;
+        require(stewards[msg.sender].isRegistered, "Only registered stewards can perform this action");
+        _;
     }
 
     //TODO: Being and steward grant you a place in the multisig that admin this contract
@@ -61,10 +61,10 @@ contract BrusselsDAO {
         voters[voter] = Voter(true, false, 0);
     }
 
-    function registerSteward(address steward) external onlyAdmin {
-    require(!stewards[steward].isRegistered, "Steward is already registered.");
-    stewards[steward].isRegistered = true;
-    stewards[steward].hasCommitment = true; 
+    function registerSteward(address stewardAddress) external onlyAdmin {
+        require(!stewards[stewardAddress].isRegistered, "Steward is already registered.");
+        stewards[stewardAddress].isRegistered = true;
+        stewards[stewardAddress].hasCommitment = false; // Assuming commitment needs to be proven after registration
     }
 
 
