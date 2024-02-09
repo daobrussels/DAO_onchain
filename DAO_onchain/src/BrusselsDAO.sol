@@ -7,7 +7,7 @@ contract BrusselsDAO {
         string description;
         uint256 voteCount;
         uint256 amount;
-        address Steward;
+        address steward;
     }
 
     struct Steward {
@@ -38,6 +38,7 @@ contract BrusselsDAO {
         require(voters[msg.sender].isRegistered, "Only registered voters can perform this action");
         _;
     }
+
     modifier onlyStewards() {
     require(stewards[msg.sender].isRegistered, "Only registered stewards can perform this action");
     _;
