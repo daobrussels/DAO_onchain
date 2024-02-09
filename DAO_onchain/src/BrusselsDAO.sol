@@ -57,6 +57,11 @@ contract BrusselsDAO {
         return members[_member].isRegistered;
     }
 
+    function getProposalAmount(uint256 proposalId) public view returns (uint256) {
+        require(proposalId < proposals.length, "Invalid proposal.");
+        return proposals[proposalId].amount;
+    }
+
     constructor() {
         admin = msg.sender;
     }
