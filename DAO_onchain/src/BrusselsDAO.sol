@@ -109,25 +109,10 @@ contract BrusselsDAO {
         proposals[proposalId].voteCount += 1;
     }
 
-    function getWinningProposal() public view returns (uint winningProposalId) {
-        uint winningVoteCount = 0;
-        for (uint i = 0; i < proposals.length; i++) {
-            if (proposals[i].voteCount > winningVoteCount) {
-                winningVoteCount = proposals[i].voteCount;
-                winningProposalId = i;
-            }
-        }
     }
 
-    function executeProposal(uint proposalId) external onlyAdmin {
-    require(proposalId == getWinningProposal(), "Can only execute the winning proposal.");
     Proposal storage proposal = proposals[proposalId];
-    
-    // Logic to transfer proposal.amount Ether to the appropriate address
-    // For example, transferring to the steward of the proposal:
-    payable(proposal.Steward).transfer(proposal.amount);
 
-    // Reset the proposal's amount if necessary
     proposal.amount = 0;
 }
 
