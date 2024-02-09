@@ -53,6 +53,10 @@ contract BrusselsDAO {
     //TODO: Being and steward grant you a place in the multisig that admin this contract
     //10 stewards, 3 approvers ---> 15 stewards 7 approvers and so on
 
+    function isMemberRegistered(address _member) public view returns (bool) {
+        return members[_member].isRegistered;
+    }
+
     constructor() {
         admin = msg.sender;
     }
