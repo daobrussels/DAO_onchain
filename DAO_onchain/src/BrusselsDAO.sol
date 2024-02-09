@@ -109,6 +109,10 @@ contract BrusselsDAO {
         proposals[proposalId].voteCount += 1;
     }
 
+    function canUnlockFunds(uint256 proposalId) public view returns (bool) {
+        require(proposalId < proposals.length, "Invalid proposal.");
+        Proposal storage proposal = proposals[proposalId];
+        return proposal.amount >= 1 ether && proposal.uniqueContributors >= 10 && proposal.voteCount >= 30;
     }
 
     Proposal storage proposal = proposals[proposalId];
