@@ -86,15 +86,21 @@ contract BrusselsDAO {
         newProposal.uniqueContributors = 0;
     }
 
-    function contributeToProposal(uint256 proposalId) external payable onlyVoters {
-    require(proposalId < proposals.length, "Invalid proposal.");
-    proposals[proposalId].amount += msg.value;
-}
     //TODO:The DAO send 100 euros and 100 tokens to start the proposal if there is no members interested you
     //don't have permision to withdraw token and don't start the proposal
 
-    function vote(uint proposalId) external onlyVoters {
-        Voter storage sender = voters[msg.sender];
+    function contributeToProposal(uint256 proposalId) external payable onlyMembers {
+        require(proposalId < proposals.length, "Invalid proposal.");
+        Proposal storage proposal = proposals[proposalId];
+        if (!proposal.contributors[msg.sender]) {
+            proposal.uniqueContributors += 1;
+            proposal.contributors[msg.sender] = true;
+        }
+        proposal.amount += msg.value;
+    }
+
+    function vote(uint256 proposalId) external onlyMembers {
+        Member storage sender = members[msg.sender];
         require(!sender.hasVoted, "Already voted.");
         require(proposalId < proposals.length, "Invalid proposal.");
 
