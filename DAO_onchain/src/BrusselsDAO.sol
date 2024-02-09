@@ -8,6 +8,8 @@ contract BrusselsDAO {
         uint256 voteCount;
         uint256 amount;
         address steward;
+        uint256 uniqueContributors;
+        mapping(address =>bool) contributors;
     }
 
     struct Steward {
@@ -16,12 +18,12 @@ contract BrusselsDAO {
         uint256[] ownedProposalIds;
     }
 
-    struct Voter {
     //TODO: Create token that represent proof of commitment IRL
     //hasCommitment = ToBeStewardWallet that have the NFT/FToken
     //SC manage the token, the last toBeSteward send the token to the sc and the CurrentSteward verify the state of the box IRL
     //and aprove the sent of the token to the next tobeSteward and make the actual tobestwerd in a steward"
 
+    struct Member {
         bool isRegistered;
         bool hasVoted;
         uint256 votedProposalId;
@@ -30,8 +32,7 @@ contract BrusselsDAO {
    
     address public admin;
     mapping(address => Steward) public stewards;
-    mapping(address => Voter) public voters;
-
+    mapping(address => Member) public members;
     Proposal[] public proposals;
 
     modifier onlyAdmin() {
@@ -39,8 +40,8 @@ contract BrusselsDAO {
         _;
     }
 
-    modifier onlyVoters() {
-        require(voters[msg.sender].isRegistered, "Only registered voters can perform this action");
+    modifier onlyMembers() {
+        require(members[msg.sender].isRegistered, "Only registered members can perform this action");
         _;
     }
 
@@ -56,9 +57,9 @@ contract BrusselsDAO {
         admin = msg.sender;
     }
 
-    function registerVoter(address voter) external onlyAdmin {
-        require(!voters[voter].isRegistered, "Voter is already registered.");
-        voters[voter] = Voter(true, false, 0);
+    function registerMember(address memberAddress) external onlyStewards {
+        require(!members[memberAddress].isRegistered, "Member is already registered.");
+        members[memberAddress] = Member({isRegistered: true, hasVoted: false, votedProposalId: 0});
     }
 
     function registerSteward(address stewardAddress) external onlyAdmin {
