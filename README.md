@@ -72,25 +72,25 @@ https://book.getfoundry.sh/getting-started/installation
 
 Prerequisits 
 
+```
 curl -L https://foundry.paradigm.xyz | bash
-
 rustup update stable
-
+```
 
 Run anvil
 
-$anvil
+`$anvil`
 
 commands 
 
 
 To Deploy 
-$ forge script script/Starter.s.sol --fork-url http://localhost:8545 --broadcast -vvv
+`$ forge script script/Starter.s.sol --fork-url http://localhost:8545 --broadcast -vvv`
 
 
 Register Stewards
 
-´´´
+```
 $ cast send --rpc-url=http://localhost:8545 0x5FbDB2315678afecb367f032d93F642f64180aa3  "registerSteward(address)" 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 
 blockHash               0x71b22d74424b46339291e1e4c76e71b443880f6de03358c5be9b8268189965d0
@@ -108,5 +108,5 @@ transactionHash         0xca2ef97558d925cb6a116a590f4d29d8dbba484ed3ed70007e19f7
 transactionIndex        0
 type                    2
 to                      0x5fbd…0aa3
-´´´
+```
 
