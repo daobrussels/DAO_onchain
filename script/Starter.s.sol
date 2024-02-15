@@ -10,7 +10,7 @@ contract DeployBrusselsDAO is Script {
 
         vm.startBroadcast(deployerPrivateKey);
 
-        BrusselsDAO brusselsDAOInstance = new BrusselsDAO();
+        new BrusselsDAO();
 
         vm.stopBroadcast();
     }
