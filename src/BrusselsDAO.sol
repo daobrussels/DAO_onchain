@@ -2,14 +2,13 @@
 pragma solidity ^0.8.0;
 
 contract BrusselsDAO {
-    
     struct Proposal {
         string description;
         uint256 voteCount;
         uint256 amount;
         address steward;
         uint256 uniqueContributors;
-        mapping(address =>bool) contributors;
+        mapping(address => bool) contributors;
     }
 
     struct Steward {
@@ -29,7 +28,6 @@ contract BrusselsDAO {
         uint256 votedProposalId; // Written like this in the code we should get the last voted proposalId. 
     }
 
- 
     event FundsUnlocked(uint256 proposalId, address steward, uint256 amount);
 
     address public admin;
@@ -117,25 +115,24 @@ contract BrusselsDAO {
         return proposal.amount >= 1 ether && proposal.uniqueContributors >= 10 && proposal.voteCount >= 30;
     }
 
-   function unlockFunds(uint256 proposalId) external onlyStewards {
+    function unlockFunds(uint256 proposalId) external onlyStewards {
+        // Use canUnlockFunds to check if the conditions for unlocking funds are met.
+        require(canUnlockFunds(proposalId), "Conditions to unlock funds not met.");
+        Proposal storage proposal = proposals[proposalId];
 
-    // Use canUnlockFunds to check if the conditions for unlocking funds are met.
-    require(canUnlockFunds(proposalId), "Conditions to unlock funds not met.");
-    Proposal storage proposal = proposals[proposalId];
+        // Ensure the caller is the steward of the proposal.
+        require(msg.sender == proposal.steward, "Only the steward of this proposal can unlock funds.");
 
-    // Ensure the caller is the steward of the proposal.
-    require(msg.sender == proposal.steward, "Only the steward of this proposal can unlock funds.");
+        // Proceed with unlocking the funds.
+        (bool sent,) = payable(proposal.steward).call{value: proposal.amount}("");
+        require(sent, "Failed to send Ether");
 
-    // Proceed with unlocking the funds.
-    (bool sent, ) = payable(proposal.steward).call{value: proposal.amount}("");
-    require(sent, "Failed to send Ether");
+        // Reset the proposal's amount to indicate that the funds have been disbursed.
+        proposal.amount = 0;
 
-    // Reset the proposal's amount to indicate that the funds have been disbursed.
-    proposal.amount = 0;
+        // Emit an event after the funds have been successfully transferred.
+        emit FundsUnlocked(proposalId, proposal.steward, proposal.amount);
+    }
 
-    // Emit an event after the funds have been successfully transferred.
-    emit FundsUnlocked(proposalId, proposal.steward, proposal.amount);
-}
-receive() external payable {}
-
+    receive() external payable {}
 }
