@@ -19,14 +19,14 @@ contract BrusselsDAO {
     }
 
     //TODO: Create token that represent proof of commitment IRL
-    //hasCommitment = ToBeStewardWallet that have the NFT/FToken
-    //SC manage the token, the last toBeSteward send the token to the sc and the CurrentSteward verify the state of the box IRL
-    //and aprove the sent of the token to the next tobeSteward and make the actual tobestwerd in a steward"
+    // hasCommitment = ToBeStewardWallet that have the NFT/Token
+    // Smart Contract manage the token, the last toBeSteward send the token to the Smart Contract and the CurrentSteward verify the state of the box IRL
+    // and aprove the sent of the token to the next tobeSteward and make the actual tobesteward in a steward"
 
     struct Member {
         bool isRegistered;
         bool hasVoted;
-        uint256 votedProposalId;
+        uint256 votedProposalId; // Written like this in the code we should get the last voted proposalId. 
     }
 
  
@@ -53,7 +53,7 @@ contract BrusselsDAO {
     }
 
     //TODO: Being and steward grant you a place in the multisig that admin this contract
-    //10 stewards, 3 approvers ---> 15 stewards 7 approvers and so on
+    // 10 stewards, 3 approvers ---> 15 stewards 7 approvers and so on
 
     function isMemberRegistered(address _member) public view returns (bool) {
         return members[_member].isRegistered;
