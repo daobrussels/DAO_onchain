@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "forge-std/Test.sol";
-import "../src/BrusselsDAO.sol"; 
+import "../src/BrusselsDAO.sol";
 
 contract BrusselsDAOTest is Test {
     BrusselsDAO dao;
@@ -32,7 +32,6 @@ contract BrusselsDAOTest is Test {
         bool isRegistered = dao.isMemberRegistered(member);
         assertTrue(isRegistered);
     }
-
 
     function testCreateProposal() public {
         string memory description = "Test Proposal";
@@ -67,7 +66,6 @@ contract BrusselsDAOTest is Test {
         // Add assertions to check the new state
     }
 
-
     function testFailUnlockFundsWithoutEnoughVotes() public {
         // Setup: Create a proposal and add insufficient votes.
 
@@ -88,13 +86,10 @@ contract BrusselsDAOTest is Test {
         dao.vote(0);
 
         // Expect a revert when trying to unlock funds
-        
         vm.prank(steward);
         dao.unlockFunds(0);
         vm.expectRevert("Conditions to unlock funds not met.");
     }
-
-
 
     //TODO: review this test
     function testUnlockFundsSuccess() public {
@@ -113,7 +108,6 @@ contract BrusselsDAOTest is Test {
         (string memory retrievedDescription,, uint256 retrievedAmount,,) = dao.proposals(proposalId);
         assertEq(retrievedDescription, description);
         assertEq(retrievedAmount, amount);
-        
         /// Register 30 members and give them some Ether
         for (uint i = 0; i < 30; i++) {
             member = address(uint160(uint(keccak256(abi.encodePacked(i)))));
