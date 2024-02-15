@@ -109,8 +109,8 @@ contract BrusselsDAOTest is Test {
         assertEq(retrievedDescription, description);
         assertEq(retrievedAmount, amount);
         /// Register 30 members and give them some Ether
-        for (uint i = 0; i < 30; i++) {
-            member = address(uint160(uint(keccak256(abi.encodePacked(i)))));
+        for (uint256 i = 0; i < 30; i++) {
+            member = address(uint160(uint256(keccak256(abi.encodePacked(i)))));
             vm.deal(member, 1 ether); // Provide Ether to each member for contributions
             vm.prank(steward);
             dao.registerMember(member); // Register member
