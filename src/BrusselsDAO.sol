@@ -1,6 +1,24 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+/**
+ * @title BrusselsDAO
+ * @dev This Solidity smart contract establishes a decentralized autonomous organization (DAO) 
+ * for community governance through proposals, voting, and fund management. Members of the DAO 
+ * can submit proposals, contribute funds, and vote on initiatives. Stewards, who are responsible 
+ * for proposal management, can register members, create proposals, and unlock funds for successful 
+ * proposals based on predefined criteria. The contract aims to facilitate transparent, democratic 
+ * decision-making and fund allocation within the community.
+ *
+ * Key Features:
+ * - Member and Steward registration for role-specific actions within the DAO.
+ * - Proposal creation and funding by community members, with steward oversight.
+ * - Voting mechanism for proposals to ensure community approval.
+ * - Criteria-based fund unlocking for successful proposals to ensure accountability.
+ * - Planned enhancements for token-based commitment proof and multisig administration.
+ */
+
+
 contract BrusselsDAO {
     struct Proposal {
         string description;
