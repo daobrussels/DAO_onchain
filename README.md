@@ -1,16 +1,19 @@
 # BrusselsDAO
+-----------------------------------
 
 
 * Structure
 * Proposal: Represents a proposal within the DAO, including a description, vote count, funding amount, the steward responsible for the proposal, the number of unique contributors, and a mapping to track which addresses have contributed.
 * Steward: Represents a steward of the DAO, with flags for registration and commitment, and a list of proposal IDs they own.
 * Member: Represents a member of the DAO, including flags for registration, voting status, and the ID of the last proposal they voted on.
+-----------------------------------
 
 
 * Modifiers:
 * onlyAdmin: Ensures that only the admin can perform certain actions.
 * onlyMembers: Ensures that only registered members can perform certain actions.
 * onlyStewards: Ensures that only registered stewards can perform certain actions.
+-----------------------------------
 
 
 * Functions:
@@ -25,6 +28,7 @@
 * canUnlockFunds: Checks if a proposal meets the criteria to unlock funds (i.e., has enough contributions, unique contributors, and votes).
 * unlockFunds: Allows the steward of a proposal to unlock and distribute the funds if the criteria are met.
 * receive(): A fallback function to receive ether into the contract.
+-----------------------------------
 
 
 * Key Concepts:
@@ -32,6 +36,7 @@
 * Voting and Contribution: Members can vote on proposals and contribute funds, which are critical for the democratic process and funding mechanism of the DAO.
 * Stewards: Stewards play a significant role in managing proposals and the DAO's operations, including the ability to register members and create proposals.
 * Funds Management: The DAO has mechanisms to collect contributions for proposals and criteria-based fund unlocking, enabling the execution of community-approved projects.
+-----------------------------------
 
 ## Foundry
 
