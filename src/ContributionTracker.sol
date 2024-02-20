@@ -1,7 +1,3 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
-
-
 * Key Features:
 * Contribution Submission: Enable community members to submit their contributions along with necessary metadata.
 * Contribution Review: Implement a system for contribution validation, which could be community-driven (e.g., voting) or managed by appointed reviewers.
@@ -20,14 +16,21 @@ pragma solidity ^0.8.0;
 * listContributions: Provides a list of contributions filtered by status, type, or contributor, aiding in transparency and accessibility.
 
 
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
 interface IBrusselsDAO {
     function isMemberRegistered(address _member) external view returns (bool);
-    function isStewardRegistered(address _steward) external view returns (bool);
+}
+
+interface IRewardDistributor {
+    function distributeTokenReward(address recipient, uint256 amount) external;
+    function distributeNFTReward(address recipient, string calldata tokenURI) external;
 }
 
 contract ContributionTracker {
     IBrusselsDAO public brusselsDAO;
+    IRewardDistributor public rewardDistributor;
 
     struct Contribution {
         address contributor;
@@ -51,16 +54,18 @@ contract ContributionTracker {
     event ContributionReviewed(uint256 indexed contributionId, bool isValidated);
     event Voted(uint256 indexed contributionId, bool vote, address indexed voter);
 
-    constructor(address _brusselsDAOAddress) {
-        brusselsDAO = IBrusselsDAO(_brusselsDAOAddress);
-    }
-
-    modifier onlyRegisteredMemberOrSteward() {
-        require(brusselsDAO.isMemberRegistered(msg.sender) || brusselsDAO.isStewardRegistered(msg.sender), "Not a registered member or steward");
+    modifier onlyRegisteredMember() {
+        require(brusselsDAO.isMemberRegistered(msg.sender), "Not a registered member");
         _;
     }
 
-    function submitContribution(string calldata description) external onlyRegisteredMemberOrSteward {
+    constructor(address _brusselsDAOAddress, address _rewardDistributorAddress) {
+        brusselsDAO = IBrusselsDAO(_brusselsDAOAddress);
+        rewardDistributor = IRewardDistributor(_rewardDistributorAddress);
+    }
+
+    function submitContribution(string calldata description) external onlyRegisteredMember {
+        uint256 contributionId = contributions.length;
         contributions.push(Contribution({
             contributor: msg.sender,
             description: description,
@@ -68,12 +73,11 @@ contract ContributionTracker {
             isReviewed: false,
             isValidated: false
         }));
-        uint256 contributionId = contributions.length - 1;
         contributionsByContributor[msg.sender].push(contributionId);
         emit ContributionSubmitted(contributionId, msg.sender);
     }
 
-    function voteOnContribution(uint256 contributionId, bool approve) external onlyRegisteredMemberOrSteward {
+    function voteOnContribution(uint256 contributionId, bool approve) external onlyRegisteredMember {
         require(contributionId < contributions.length, "Contribution does not exist.");
         require(!votes[contributionId].hasVoted[msg.sender], "Already voted on this contribution.");
 
@@ -87,14 +91,17 @@ contract ContributionTracker {
         emit Voted(contributionId, approve, msg.sender);
     }
 
-    function reviewContribution(uint256 contributionId) external {
+    function reviewContribution(uint256 contributionId) external onlyRegisteredMember {
         require(contributionId < contributions.length, "Contribution does not exist.");
         Contribution storage contribution = contributions[contributionId];
         require(!contribution.isReviewed, "Contribution already reviewed.");
 
-        Vote storage vote = votes[contributionId];
-        if (vote.positiveVotes > vote.negativeVotes) {
+        Vote storage voteRecord = votes[contributionId];
+        if (voteRecord.positiveVotes > voteRecord.negativeVotes) {
             contribution.isValidated = true;
+            // Call RewardDistributor to handle rewards
+            rewardDistributor.distributeTokenReward(contribution.contributor, 100); // Example token reward
+            rewardDistributor.distributeNFTReward(contribution.contributor, "tokenURI_here"); // Example NFT award
         }
         contribution.isReviewed = true;
 
@@ -106,5 +113,5 @@ contract ContributionTracker {
         return contributions[contributionId];
     }
 
-    // Additional functions for listing contributions can be added here.
+    
 }
