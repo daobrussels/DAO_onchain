@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
 * Key Features:
 * Contribution Submission: Enable community members to submit their contributions along with necessary metadata.
 * Contribution Review: Implement a system for contribution validation, which could be community-driven (e.g., voting) or managed by appointed reviewers.
@@ -16,8 +19,6 @@
 * listContributions: Provides a list of contributions filtered by status, type, or contributor, aiding in transparency and accessibility.
 
 
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
 
 interface IBrusselsDAO {
     function isMemberRegistered(address _member) external view returns (bool);
