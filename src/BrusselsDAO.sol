@@ -96,7 +96,7 @@ contract BrusselsDAO {
 
     function registerMember(address memberAddress) external onlyStewards {
         require(!members[memberAddress].isRegistered, "Member is already registered.");
-        members[memberAddress] = Member({isRegistered: true, hasVoted: false, votedProposalId: 0});
+        members[memberAddress].isRegistered = true;
     }
 
     function registerSteward(address stewardAddress) external onlyAdmin {
