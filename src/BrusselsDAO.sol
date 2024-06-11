@@ -172,18 +172,19 @@ contract BrusselsDAO {
 
     function unlockFunds(uint256 proposalId) external onlyStewards {
         // Use canUnlockFunds to check if the conditions for unlocking funds are met.
+        require(proposalId < proposals.length, "Invalid proposal.");
         require(canUnlockFunds(proposalId), "Conditions to unlock funds not met.");
         Proposal storage proposal = proposals[proposalId];
         // Ensure the caller is the steward of the proposal.
         require(msg.sender == proposal.steward, "Only the steward of this proposal can unlock funds.");
-        (bool sent,) = payable(proposal.steward).call{value: proposal.amount}("");
-        require(sent, "Failed to send Ether");
-
         // Reset the proposal's amount to indicate that the funds have been disbursed.
+        uint256 amountToSend = proposal.amount;
         proposal.amount = 0;
         // Proceed with unlocking the funds.
+        (bool sent,) = payable(proposal.steward).call{value: amountToSend}("");
+        require(sent, "Failed to send Ether");
         // Emit an event after the funds have been successfully transferred.
-        emit FundsUnlocked(proposalId, proposal.steward, proposal.amount);
+        emit FundsUnlocked(proposalId, proposal.steward, amountToSend);
     }
 
     receive() external payable {}
