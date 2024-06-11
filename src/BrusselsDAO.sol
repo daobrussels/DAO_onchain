@@ -21,7 +21,8 @@ pragma solidity ^0.8.0;
 contract BrusselsDAO {
     struct Proposal {
         string description;
-        uint256 voteCount;
+        uint256 yesVotes;
+        uint256 noVotes;
         uint256 amount;
         address steward;
         uint256 uniqueContributors;
@@ -41,8 +42,7 @@ contract BrusselsDAO {
 
     struct Member {
         bool isRegistered;
-        bool hasVoted;
-        uint256 votedProposalId; // Written like this in the code we should get the last voted proposalId. 
+        mapping(uint256 => bool) hasVotedFor;
     }
 
 
@@ -98,7 +98,8 @@ contract BrusselsDAO {
     function createProposal(string calldata description, uint256 amount, address stewardAddress) external onlyStewards {
         Proposal storage newProposal = proposals.push();
         newProposal.description = description;
-        newProposal.voteCount = 0;
+        newProposal.yesVotes = 0;
+        newProposal.noVotes = 0;
         newProposal.amount = amount;
         newProposal.steward = stewardAddress;
         newProposal.uniqueContributors = 0;
@@ -120,20 +121,26 @@ contract BrusselsDAO {
         proposal.amount += msg.value;
     }
 
-    function vote(uint256 proposalId) external onlyMembers {
-        Member storage sender = members[msg.sender];
-        require(!sender.hasVoted, "Already voted.");
+    function vote(uint256 proposalId, bool support) external onlyMembers {
         require(proposalId < proposals.length, "Invalid proposal.");
+        Proposal storage proposal = proposals[proposalId];
+        Member storage sender = members[msg.sender];
+        require(!sender.hasVotedFor[proposalId], "Already voted for this proposal.");
 
-        sender.hasVoted = true;
-        sender.votedProposalId = proposalId;
-        proposals[proposalId].voteCount += 1;
+        sender.hasVotedFor[proposalId] = true;
+        if (support) {
+            proposal.yesVotes += 1;
+        } else {
+            proposal.noVotes += 1;
+        }
     }
 
     function canUnlockFunds(uint256 proposalId) public view returns (bool) {
         require(proposalId < proposals.length, "Invalid proposal.");
         Proposal storage proposal = proposals[proposalId];
-        return proposal.amount >= 1 ether && proposal.uniqueContributors >= 10 && proposal.voteCount >= 30;
+        return proposal.amount >= defaultRequirements.minAmount &&
+               proposal.uniqueContributors >= defaultRequirements.minUniqueContributors &&
+               (proposal.yesVotes + proposal.noVotes) >= defaultRequirements.minVoteCount;
     }
 
     function unlockFunds(uint256 proposalId) external onlyStewards {
