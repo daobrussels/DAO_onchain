@@ -18,7 +18,6 @@ pragma solidity ^0.8.0;
  * - Planned enhancements for token-based commitment proof and multisig administration.
  */
 
-
 contract BrusselsDAO {
     struct Proposal {
         string description;
@@ -38,13 +37,14 @@ contract BrusselsDAO {
     //TODO: Create token that represent proof of commitment IRL
     // hasCommitment = ToBeStewardWallet that have the NFT/Token
     // Smart Contract manage the token, the last toBeSteward send the token to the Smart Contract and the CurrentSteward verify the state of the box IRL
-    // and aprove the sent of the token to the next tobeSteward and make the actual tobesteward in a steward"
+    // and approve the sent of the token to the next tobeSteward and make the actual tobesteward in a steward
 
     struct Member {
         bool isRegistered;
         bool hasVoted;
         uint256 votedProposalId; // Written like this in the code we should get the last voted proposalId. 
     }
+
 
     event FundsUnlocked(uint256 proposalId, address steward, uint256 amount);
 
@@ -104,12 +104,15 @@ contract BrusselsDAO {
         newProposal.uniqueContributors = 0;
     }
 
-    //TODO:The DAO send 100 euros and 100 tokens to start the proposal if there is no members interested you
-    //don't have permision to withdraw token and don't start the proposal
+
+    // TODO:The DAO send 100 euros and 100 tokens to start the proposal if there is no members interested you
+    // don't have permission to withdraw token and don't start the proposal
+
 
     function contributeToProposal(uint256 proposalId) external payable onlyMembers {
         require(proposalId < proposals.length, "Invalid proposal.");
         Proposal storage proposal = proposals[proposalId];
+        
         if (!proposal.contributors[msg.sender]) {
             proposal.uniqueContributors += 1;
             proposal.contributors[msg.sender] = true;
@@ -137,17 +140,14 @@ contract BrusselsDAO {
         // Use canUnlockFunds to check if the conditions for unlocking funds are met.
         require(canUnlockFunds(proposalId), "Conditions to unlock funds not met.");
         Proposal storage proposal = proposals[proposalId];
-
         // Ensure the caller is the steward of the proposal.
         require(msg.sender == proposal.steward, "Only the steward of this proposal can unlock funds.");
-
-        // Proceed with unlocking the funds.
         (bool sent,) = payable(proposal.steward).call{value: proposal.amount}("");
         require(sent, "Failed to send Ether");
 
         // Reset the proposal's amount to indicate that the funds have been disbursed.
         proposal.amount = 0;
-
+        // Proceed with unlocking the funds.
         // Emit an event after the funds have been successfully transferred.
         emit FundsUnlocked(proposalId, proposal.steward, proposal.amount);
     }
