@@ -27,6 +27,7 @@ contract BrusselsDAO {
         address steward;
         uint256 uniqueContributors;
         mapping(address => bool) contributors;
+        ProposalStatus status;
     }
 
     struct Steward {
@@ -51,6 +52,7 @@ contract BrusselsDAO {
         uint256 minVoteCount;
     }
 
+    enum ProposalStatus { Open, Closed, Funded }
 
     event FundsUnlocked(uint256 proposalId, address steward, uint256 amount);
 
@@ -104,8 +106,10 @@ contract BrusselsDAO {
     }
 
     function createProposal(string calldata description, uint256 amount, address stewardAddress) external onlyStewards {
+        require(stewards[stewardAddress].isRegistered, "Steward is not registered.");
         Proposal storage newProposal = proposals.push();
         newProposal.description = description;
+        newProposal.status = ProposalStatus.Open;
         newProposal.yesVotes = 0;
         newProposal.noVotes = 0;
         newProposal.amount = amount;
@@ -120,10 +124,22 @@ contract BrusselsDAO {
     // TODO:The DAO send 100 euros and 100 tokens to start the proposal if there is no members interested you
     // don't have permission to withdraw token and don't start the proposal
 
+    function closeProposal(uint256 proposalId) external onlyStewards {
+        require(proposalId < proposals.length, "Invalid proposal.");
+        Proposal storage proposal = proposals[proposalId];
+        proposal.status = ProposalStatus.Closed;
+    }
+
+    function openProposal(uint256 proposalId) external onlyStewards {
+        require(proposalId < proposals.length, "Invalid proposal.");
+        Proposal storage proposal = proposals[proposalId];
+        proposal.status = ProposalStatus.Open;
+    }
 
     function contributeToProposal(uint256 proposalId) external payable onlyMembers {
         require(proposalId < proposals.length, "Invalid proposal.");
         Proposal storage proposal = proposals[proposalId];
+        require(proposal.status == ProposalStatus.Open, "Proposal is not open for contributions.");
         
         if (!proposal.contributors[msg.sender]) {
             proposal.uniqueContributors += 1;
