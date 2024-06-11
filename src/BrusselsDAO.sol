@@ -45,6 +45,12 @@ contract BrusselsDAO {
         mapping(uint256 => bool) hasVotedFor;
     }
 
+    struct ProposalRequirements {
+        uint256 minAmount;
+        uint256 minUniqueContributors;
+        uint256 minVoteCount;
+    }
+
 
     event FundsUnlocked(uint256 proposalId, address steward, uint256 amount);
 
@@ -52,6 +58,7 @@ contract BrusselsDAO {
     mapping(address => Steward) public stewards;
     mapping(address => Member) public members;
     Proposal[] public proposals;
+    ProposalRequirements public defaultRequirements;
 
     modifier onlyAdmin() {
         require(msg.sender == admin, "Only admin can perform this action");
@@ -82,6 +89,7 @@ contract BrusselsDAO {
 
     constructor() {
         admin = msg.sender;
+        defaultRequirements = ProposalRequirements(1 ether, 10, 30);
     }
 
     function registerMember(address memberAddress) external onlyStewards {
@@ -105,6 +113,9 @@ contract BrusselsDAO {
         newProposal.uniqueContributors = 0;
     }
 
+    function setDefaultRequirements(uint256 minAmount, uint256 minUniqueContributors, uint256 minVoteCount) external onlyAdmin {
+        defaultRequirements = ProposalRequirements(minAmount, minUniqueContributors, minVoteCount);
+    }
 
     // TODO:The DAO send 100 euros and 100 tokens to start the proposal if there is no members interested you
     // don't have permission to withdraw token and don't start the proposal
