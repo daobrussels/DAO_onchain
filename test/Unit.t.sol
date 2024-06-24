@@ -83,7 +83,7 @@ contract BrusselsDAOTest is Test {
 
         // Assuming the proposal needs more votes than this to unlock funds
         vm.prank(member);
-        dao.vote(0);
+        dao.vote(0,true);
 
         // Expect a revert when trying to unlock funds
         vm.prank(steward);
@@ -123,7 +123,7 @@ contract BrusselsDAOTest is Test {
 
             // All 30 members vote on the proposal
             vm.prank(member);
-            dao.vote(proposalId); // Assuming a vote is a simple call without additional parameters
+            dao.vote(proposalId, true);
         }
 
         // Preconditions should be met: enough contributions, unique contributors, and votes
