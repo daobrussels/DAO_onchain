@@ -42,7 +42,7 @@ contract BrusselsDAOTest is Test {
         dao.createProposal(description, amount, steward);
 
         // Check that a proposal was created
-        (string memory retrievedDescription,, uint256 retrievedAmount,,) = dao.proposals(0);
+        (string memory retrievedDescription, ,uint256 yesVotes, uint256 noVotes, uint256 retrievedAmount, address stewardAddress, uint256 uniqueContributors) = dao.proposals(0);
         assertEq(retrievedDescription, description);
         assertEq(retrievedAmount, amount);
     }
@@ -77,7 +77,7 @@ contract BrusselsDAOTest is Test {
         dao.createProposal(description, amount, steward);
 
         // Check that a proposal was created
-        (string memory retrievedDescription,, uint256 retrievedAmount,,) = dao.proposals(0);
+        (string memory retrievedDescription, ,uint256 yesVotes, uint256 noVotes, uint256 retrievedAmount, address stewardAddress, uint256 uniqueContributors) = dao.proposals(0);
         assertEq(retrievedDescription, description);
         assertEq(retrievedAmount, amount);
 
@@ -105,7 +105,7 @@ contract BrusselsDAOTest is Test {
         dao.createProposal(description, amount, steward);
 
         // Check that a proposal was created
-        (string memory retrievedDescription,, uint256 retrievedAmount,,) = dao.proposals(proposalId);
+        (string memory retrievedDescription, ,uint256 yesVotes, uint256 noVotes, uint256 retrievedAmount, address stewardAddress, uint256 uniqueContributors) = dao.proposals(proposalId);
         assertEq(retrievedDescription, description);
         assertEq(retrievedAmount, amount);
         /// Register 30 members and give them some Ether
