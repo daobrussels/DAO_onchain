@@ -3,9 +3,10 @@
 
 
 ### Structure:
-* Proposal: Represents a proposal within the DAO, including a description, vote count, funding amount, the steward responsible for the proposal, the number of unique contributors, and a mapping to track which addresses have contributed.
-* Steward: Represents a steward of the DAO, with flags for registration and commitment, and a list of proposal IDs they own.
-* Member: Represents a member of the DAO, including flags for registration, voting status, and the ID of the last proposal they voted on.
+* Proposal:  Represents a proposal within the DAO, including a description, vote count (yes and no votes), funding amount, the steward responsible, the number of unique contributors, and a mapping to track contributing addresses.
+* Admin: A multisig wallet controlled socially by all the stewards.
+* Steward:  A participant with socially confirmed contributions, flags for registration and commitment, and a list of proposal IDs they own.
+* Member: A confirmed human (via Social KYC, no connection between identity and wallet address) including flags for registration and voting status.
 -----------------------------------
 
 
