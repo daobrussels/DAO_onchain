@@ -21,13 +21,13 @@ pragma solidity ^0.8.0;
 contract BrusselsDAO {
     struct Proposal {
         string description;
+        ProposalStatus status;
         uint256 yesVotes;
         uint256 noVotes;
         uint256 amount;
         address steward;
         uint256 uniqueContributors;
         mapping(address => bool) contributors;
-        ProposalStatus status;
     }
 
     struct Steward {
